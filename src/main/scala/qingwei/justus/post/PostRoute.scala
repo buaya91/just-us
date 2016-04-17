@@ -9,12 +9,12 @@ import com.softwaremill.session.SessionOptions._
 import slick.driver.PostgresDriver.api._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import qingwei.justus.auth.AuthManager
-import qingwei.justus.post.model.{BlogPost, PostTable, UserSubmitPost, UserSubmitPostUpdate}
+import qingwei.justus.post.model.{ BlogPost, PostTable, UserSubmitPost, UserSubmitPostUpdate }
 import spray.json.DefaultJsonProtocol
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 trait PostRoute extends PostSprayJson with SprayJsonSupport {
   this: DefaultJsonProtocol with AuthManager =>
@@ -38,7 +38,7 @@ trait PostRoute extends PostSprayJson with SprayJsonSupport {
           val generatePost = BlogPost(session.id, post.title, post.content, post.postAt, post.tags)
           onComplete(insertPost(generatePost)) {
             case Success(pid) => complete(OK, Map("pid" -> pid))
-            case Failure(e)   => complete(InternalServerError, e.getLocalizedMessage())
+            case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
           }
         }
       }
@@ -46,20 +46,20 @@ trait PostRoute extends PostSprayJson with SprayJsonSupport {
       get {
         parameter('id.as[Long]) { id =>
           onComplete(getPostById(id)) {
-            case Success(post)         => complete(OK, post)
-            case Failure(_)            => complete(BadRequest, "Post not found")
+            case Success(post) => complete(OK, post)
+            case Failure(_) => complete(BadRequest, "Post not found")
           }
         } ~
-        parameters('tag) { tag =>
-          onComplete(getPostByTag(tag)) {
-            case Success(posts) => complete(OK, posts)
-            case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
-          }
-        } ~
+          parameters('tag) { tag =>
+            onComplete(getPostByTag(tag)) {
+              case Success(posts) => complete(OK, posts)
+              case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
+            }
+          } ~
           parameter('author) { author =>
             onComplete(getPostByAuthor(author)) {
               case Success(posts) => complete(OK, posts)
-              case Failure(e)     => complete(InternalServerError, e.getLocalizedMessage())
+              case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
             }
           } ~
           parameterMultiMap { params =>
@@ -67,22 +67,22 @@ trait PostRoute extends PostSprayJson with SprayJsonSupport {
             val after = params.get("after").flatMap(l => l.headOption).map(dateString => LocalDate.parse(dateString))
             onComplete(getPostByDateRange(before, after)) {
               case Success(posts) => complete(OK, posts)
-              case Failure(e)     => complete(InternalServerError, e.getLocalizedMessage())
+              case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
             }
           }
       } ~
-    path("modify") {
-      post {
-        entity(as[UserSubmitPostUpdate]) { update =>
-          requiredSession(oneOff, usingHeaders) { session =>
-            onComplete(updatePost(update)) {
-              case Success(true)  => complete(OK)
-              case Success(false) => complete(BadRequest, "Update fail: Post does not exist")
-              case Failure(e)     => complete(InternalServerError, e.getLocalizedMessage())
+      path("modify") {
+        post {
+          entity(as[UserSubmitPostUpdate]) { update =>
+            requiredSession(oneOff, usingHeaders) { session =>
+              onComplete(updatePost(update)) {
+                case Success(true) => complete(OK)
+                case Success(false) => complete(BadRequest, "Update fail: Post does not exist")
+                case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
+              }
             }
           }
         }
       }
-    }
   }
 }

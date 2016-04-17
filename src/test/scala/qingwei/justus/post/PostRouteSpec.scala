@@ -2,24 +2,24 @@ package qingwei.justus.post
 
 import java.time.LocalDate
 
-import akka.http.scaladsl.model.{HttpHeader, StatusCodes}
+import akka.http.scaladsl.model.{ HttpHeader, StatusCodes }
 import akka.http.scaladsl.model.HttpHeader.ParsingResult
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import org.scalatest.{BeforeAndAfterEach, FunSpec, ShouldMatchers}
+import org.scalatest.{ BeforeAndAfterEach, FunSpec, ShouldMatchers }
 import qingwei.justus.IntegrationHelper
-import qingwei.justus.auth.{AuthManager, AuthRoute}
+import qingwei.justus.auth.{ AuthManager, AuthRoute }
 import qingwei.justus.post.model.BlogPost
 import spray.json.DefaultJsonProtocol
 
 class PostRouteSpec extends FunSpec
-  with ShouldMatchers
-  with IntegrationHelper
-  with ScalatestRouteTest
-  with PostRoute
-  with AuthManager
-  with AuthRoute
-  with DefaultJsonProtocol
-  with BeforeAndAfterEach {
+    with ShouldMatchers
+    with IntegrationHelper
+    with ScalatestRouteTest
+    with PostRoute
+    with AuthManager
+    with AuthRoute
+    with DefaultJsonProtocol
+    with BeforeAndAfterEach {
 
   override def beforeEach() = {
     clearPost()
@@ -39,7 +39,7 @@ class PostRouteSpec extends FunSpec
             Post("/post", testPost).withHeaders(h) ~> postRoute ~> check {
               entityAs[Map[String, Long]].get("pid") match {
                 case Some(p) => assert(true)
-                case _       => assert(false, "pid not return")
+                case _ => assert(false, "pid not return")
               }
             }
           }

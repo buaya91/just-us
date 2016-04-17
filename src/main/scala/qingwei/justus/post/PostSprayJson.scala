@@ -2,7 +2,7 @@ package qingwei.justus.post
 
 import java.time.LocalDate
 
-import qingwei.justus.post.model.{BlogPost, UserSubmitPost, UserSubmitPostUpdate}
+import qingwei.justus.post.model.{ BlogPost, UserSubmitPost, UserSubmitPostUpdate }
 import spray.json._
 
 trait PostSprayJson {

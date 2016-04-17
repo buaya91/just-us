@@ -2,7 +2,7 @@ package qingwei.justus
 
 import java.time.LocalDate
 
-import qingwei.justus.post.model.{BlogPost, PostTable, UserSubmitPost}
+import qingwei.justus.post.model.{ BlogPost, PostTable, UserSubmitPost }
 import qingwei.justus.postgres.CustomPostgresDriver.api._
 
 import scala.concurrent.Await
