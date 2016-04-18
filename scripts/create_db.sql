@@ -1,1 +1,1 @@
-CREATE DATABASE just-us;
+CREATE DATABASE just_us;
