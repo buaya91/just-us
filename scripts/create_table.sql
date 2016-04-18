@@ -2,7 +2,7 @@ create table users (
 email text PRIMARY KEY,
 password text NOT NULL,
 name text NOT NULL
-)
+);
 
 create table posts (
 pid serial PRIMARY KEY,
