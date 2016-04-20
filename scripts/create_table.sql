@@ -10,6 +10,6 @@ author text,
 title text NOT NULL,
 content text NOT NULL,
 post_at date NOT NULL DEFAULT CURRENT_DATE,
-tags text[],
+tags text[] NOT NULL DEFAULT '{}',
 FOREIGN KEY (author) REFERENCES users(email)
 );

@@ -6,9 +6,9 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.StatusCodes._
 import com.softwaremill.session.SessionDirectives._
 import com.softwaremill.session.SessionOptions._
-import slick.driver.PostgresDriver.api._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import qingwei.justus.auth.AuthManager
+import qingwei.justus.postgres.CustomPostgresDriver.api._
 import qingwei.justus.post.model.{ BlogPost, PostTable, UserSubmitPost, UserSubmitPostUpdate }
 import spray.json.DefaultJsonProtocol
 
@@ -25,7 +25,8 @@ trait PostRoute extends PostSprayJson with SprayJsonSupport {
   def updatePost(update: UserSubmitPostUpdate): Future[Boolean] =
     db.run(PostTable.updatePost(update)).map(rc => if (rc == 1) true else false)
 
-  def getPostById(id: Long): Future[BlogPost] = db.run(PostTable.getById(id)).map(s => s.head)
+  def getAllPost: Future[Seq[BlogPost]] = db.run(PostTable.allPost.result)
+  def getPostById(id: Long): Future[Option[BlogPost]] = db.run(PostTable.getById(id)).map(p => p.headOption)
   def getPostByTag(tag: String): Future[Seq[BlogPost]] = db.run(PostTable.getByTag(tag))
   def getPostByDateRange(before: Option[LocalDate], after: Option[LocalDate]): Future[Seq[BlogPost]] =
     db.run(PostTable.getByDateRange(before, after))
@@ -69,6 +70,10 @@ trait PostRoute extends PostSprayJson with SprayJsonSupport {
               case Success(posts) => complete(OK, posts)
               case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
             }
+          } ~
+          onComplete(getAllPost) {
+            case Success(posts) => complete(OK, posts)
+            case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
           }
       } ~
       path("modify") {
