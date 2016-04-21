@@ -20,7 +20,9 @@ libraryDependencies ++= Seq(
   "com.github.tminglei"                         %% "slick-pg_date2"                                 % slickPgV,
   "com.softwaremill.akka-http-session"          %% "core"                                           % sessionV,
   "com.softwaremill.akka-http-session"          %% "jwt"                                            % sessionV,
+  "ch.megard"                                   %% "akka-http-cors"                                 % "0.1.1",
+  "com.typesafe.scala-logging"                  %% "scala-logging"                                  % "3.1.0",
+  "ch.qos.logback"                              %  "logback-classic"                                % "1.1.2",
   "com.github.t3hnar"                           %% "scala-bcrypt"                                   % "2.5",
-  "org.slf4j"                                   %  "slf4j-nop"                                      % "1.6.4",
   "org.scalatest"                               %% "scalatest"                                      % "2.2.6"   % "test"
 )
