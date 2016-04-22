@@ -13,7 +13,7 @@ trait PostSprayJson {
     override def write(obj: LocalDate): JsValue = JsString(obj.toString)
   }
 
-  implicit val postToJson = jsonFormat5(BlogPost)
+  implicit val postToJson = jsonFormat6(BlogPost.apply)
   implicit val userPostToJson = jsonFormat4(UserSubmitPost)
   implicit val userUpdateToJson = jsonFormat4(UserSubmitPostUpdate)
 }
