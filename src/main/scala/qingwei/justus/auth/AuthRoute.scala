@@ -30,10 +30,10 @@ trait AuthRoute extends UserSprayJson with SprayJsonSupport {
   val authRoute = path("login") {
     post {
       entity(as[Map[String, String]]) { param =>
-        (param.get("email"), param.get("password")) match {
-          case (Some(email), Some(password)) => onComplete(login(email, password)) {
-            case Success(true) => setSession(oneOff, usingHeaders, Session(email)) { complete(OK) }
-            case Success(false) => complete(BadRequest, "Email and password does not match")
+        (param.get("username"), param.get("password")) match {
+          case (Some(username), Some(password)) => onComplete(login(username, password)) {
+            case Success(true) => setSession(oneOff, usingHeaders, Session(username)) { complete(OK) }
+            case Success(false) => complete(BadRequest, "Username and password does not match")
             case Failure(e) => complete(InternalServerError, "Request is not completed")
           }
           case _ => complete(BadRequest, "Missing parameter")
