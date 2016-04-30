@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 trait IntegrationHelper {
   def db = Database.forConfig("postgres.test")
 
-  val testPost = UserSubmitPost("Title", """Content should be very long and contain many things""", LocalDate.now(), Nil)
+  val testPost = UserSubmitPost("Title", """Content should be very long and contain many things""", Nil)
   val testCredential = Map("username" -> "l.q.wei91@gmail.com", "password" -> "secret")
 
   val internalPost = BlogPost("l.q.wei91@gmail.com", "Some title", "Content", LocalDate.now(), Nil)

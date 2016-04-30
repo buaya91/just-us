@@ -1,5 +1,7 @@
 package qingwei.justus.post
 
+import java.time.LocalDate
+
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.StatusCodes._
 import com.softwaremill.session.SessionDirectives._
@@ -22,7 +24,7 @@ trait PostRoute extends PostSprayJson with SprayJsonSupport {
     post {
       entity(as[UserSubmitPost]) { post =>
         requiredSession(oneOff, usingHeaders) { session =>
-          val generatePost = BlogPost(session.id, post.title, post.content, post.postAt, post.tags)
+          val generatePost = BlogPost(session.id, post.title, post.content, LocalDate.now(), post.tags)
           onComplete(insertPost(generatePost)) {
             case Success(pid) => complete(OK, Map("pid" -> pid))
             case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())

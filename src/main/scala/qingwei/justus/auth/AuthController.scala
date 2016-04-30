@@ -15,7 +15,7 @@ object AuthController {
   def getName(email: String) =
     allUser.filter(u => u.email === email).map(_.name).result
 
-  def login(email: String, password: String)(implicit db: Database ): Future[(Boolean, String)] = {
+  def login(email: String, password: String)(implicit db: Database): Future[(Boolean, String)] = {
     db.run(AuthController.getPasswordHashAndName(email)).map(pws => pws.headOption match {
       case Some((pwhash, name)) => (password.isBcrypted(pwhash), name)
       case None => (false, "")
