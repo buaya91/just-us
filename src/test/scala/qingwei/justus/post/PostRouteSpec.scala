@@ -61,8 +61,8 @@ class PostRouteSpec extends FunSpec
 
     describe("when receive GET on /post/:id") {
       it("should return post with pid") {
-        Get("/post?id=2") ~> postRoute ~> check {
-          entityAs[BlogPost] should equal(BlogPost("l.q.wei91@gmail.com", "sample", "sample", LocalDate.now(), Nil))
+        Get("/post?id=0") ~> postRoute ~> check {
+          entityAs[BlogPost] should equal(BlogPost("Qingwei", "sample", "sample", LocalDate.now(), Nil))
         }
       }
     }

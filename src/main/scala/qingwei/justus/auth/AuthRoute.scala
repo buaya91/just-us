@@ -4,7 +4,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers._
 import com.github.t3hnar.bcrypt._
-import qingwei.justus.auth.model.{ Session, UserTable }
+import qingwei.justus.auth.model.Session
 import com.softwaremill.session.SessionDirectives._
 import com.softwaremill.session.SessionOptions._
 
@@ -21,10 +21,10 @@ trait AuthRoute extends UserSprayJson with SprayJsonSupport {
   this: DefaultJsonProtocol with AuthManager =>
   def db: Database
 
-  def login(email: String, password: String): Future[Boolean] = {
-    db.run(UserTable.getPasswordHash(email)).map(pws => pws.headOption match {
-      case Some(pwhash) => password.isBcrypted(pwhash)
-      case None => false
+  def login(email: String, password: String): Future[(Boolean, String)] = {
+    db.run(AuthController.getPasswordHashAndName(email)).map(pws => pws.headOption match {
+      case Some((pwhash, name)) => (password.isBcrypted(pwhash), name)
+      case None => (false, "")
     })
   }
 
@@ -33,13 +33,13 @@ trait AuthRoute extends UserSprayJson with SprayJsonSupport {
       entity(as[Map[String, String]]) { param =>
         (param.get("username"), param.get("password")) match {
           case (Some(username), Some(password)) => onComplete(login(username, password)) {
-            case Success(true) => setSession(oneOff, usingHeaders, Session(username)) {
+            case Success((true, name)) => setSession(oneOff, usingHeaders, Session(username)) {
               val exposeJWT = RawHeader("Access-Control-Expose-Headers", "Set-Authorization")
               respondWithHeader(exposeJWT) {
-                complete(OK)
+                complete(OK, name)
               }
             }
-            case Success(false) => complete(BadRequest, "Username and password does not match")
+            case Success((false, _)) => complete(BadRequest, "Username and password does not match")
             case Failure(e) => complete(InternalServerError, "Request is not completed")
           }
           case _ => complete(BadRequest, "Missing parameter")
