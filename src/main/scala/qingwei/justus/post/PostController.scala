@@ -1,7 +1,7 @@
 package qingwei.justus.post
 
 import qingwei.justus.auth.AuthController
-import qingwei.justus.post.model.{BlogPost, PostTable, UserSubmitPostUpdate}
+import qingwei.justus.post.model.{ BlogPost, PostTable, UserSubmitPostUpdate }
 import qingwei.justus.postgres.CustomPostgresDriver.api._
 
 import scala.concurrent.Future
@@ -27,8 +27,8 @@ object PostController {
   def getById(pid: Long)(implicit db: Database): Future[Option[BlogPost]] = {
     val postJoinAuthorName = (
       (allPost join AuthController.allUser).on(_.author === _.email)
-        .filter { case (p, u) => p.pid === pid }
-        .map { case (p, u) => (p, u.name)}
+      .filter { case (p, u) => p.pid === pid }
+      .map { case (p, u) => (p, u.name) }
     ).result
 
     db.run(postJoinAuthorName).map(_.headOption.map {
@@ -39,8 +39,8 @@ object PostController {
   def getAll(implicit db: Database): Future[Seq[BlogPost]] = {
     val postJoinAuthorName = (
       (allPost join AuthController.allUser).on(_.author === _.email)
-        .map { case (p, u) => (p, u.name)}
-      ).result
+      .map { case (p, u) => (p, u.name) }
+    ).result
 
     db.run(postJoinAuthorName).map(_.map {
       case (p, u) => BlogPost(p.pid, u, p.title, p.content, p.postAt, p.tags)
@@ -50,9 +50,9 @@ object PostController {
   def getByTag(tag: String)(implicit db: Database): Future[Seq[BlogPost]] = {
     val postJoinAuthorName = (
       (allPost join AuthController.allUser).on(_.author === _.email)
-        .filter { case (p, u) => p.tags @> List(tag) }
-        .map { case (p, u) => (p, u.name)}
-      ).result
+      .filter { case (p, u) => p.tags @> List(tag) }
+      .map { case (p, u) => (p, u.name) }
+    ).result
 
     db.run(postJoinAuthorName).map(_.map {
       case (p, u) => BlogPost(p.pid, u, p.title, p.content, p.postAt, p.tags)
@@ -62,14 +62,13 @@ object PostController {
   def getByAuthor(author: String)(implicit db: Database): Future[Seq[BlogPost]] = {
     val postJoinAuthorName = (
       (allPost join AuthController.allUser).on(_.author === _.email)
-        .filter { case (p, u) => u.email === author }
-        .map { case (p, u) => (p, u.name)}
-      ).result
+      .filter { case (p, u) => u.email === author }
+      .map { case (p, u) => (p, u.name) }
+    ).result
 
     db.run(postJoinAuthorName).map(_.map {
       case (p, u) => BlogPost(p.pid, u, p.title, p.content, p.postAt, p.tags)
     })
   }
-
 
 }
