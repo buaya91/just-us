@@ -19,7 +19,6 @@ trait IntegrationHelper {
 
   def clearPost = () => {
     Await.result(db.run(PostController.allPost.delete), 1 second)
-    db.close()
   }
 
   def insertPost = () => {
