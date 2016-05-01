@@ -20,18 +20,32 @@ trait PostRoute extends PostSprayJson with SprayJsonSupport {
 
   implicit def db: Database
 
-  val postRoute = path("post") {
-    post {
-      entity(as[UserSubmitPost]) { post =>
-        requiredSession(oneOff, usingHeaders) { session =>
-          val generatePost = BlogPost(session.id, post.title, post.content, LocalDate.now(), post.tags)
-          onComplete(insertPost(generatePost)) {
-            case Success(pid) => complete(OK, Map("pid" -> pid))
-            case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
+  val postRoute = pathPrefix("post") {
+    path(LongNumber) { pid =>
+      post {
+        entity(as[UserSubmitPost]) { post =>
+          requiredSession(oneOff, usingHeaders) { session =>
+            val update = UserSubmitPostUpdate(session.id, pid, post.title, post.content, post.tags)
+            onComplete(updatePost(update)) {
+              case Success(true) => complete(OK)
+              case Success(false) => complete(BadRequest, "Update fail: Post does not exist")
+              case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
+            }
           }
         }
       }
     } ~
+      post {
+        entity(as[UserSubmitPost]) { post =>
+          requiredSession(oneOff, usingHeaders) { session =>
+            val generatePost = BlogPost(session.id, post.title, post.content, LocalDate.now(), post.tags)
+            onComplete(insertPost(generatePost)) {
+              case Success(pid) => complete(OK, Map("pid" -> pid))
+              case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
+            }
+          }
+        }
+      } ~
       get {
         parameter('id.as[Long]) { id =>
           onComplete(getById(id)) {
@@ -55,19 +69,6 @@ trait PostRoute extends PostSprayJson with SprayJsonSupport {
             case Success(posts) => complete(OK, posts)
             case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
           }
-      } ~
-      path("modify") {
-        post {
-          entity(as[UserSubmitPostUpdate]) { update =>
-            requiredSession(oneOff, usingHeaders) { session =>
-              onComplete(updatePost(update)) {
-                case Success(true) => complete(OK)
-                case Success(false) => complete(BadRequest, "Update fail: Post does not exist")
-                case Failure(e) => complete(InternalServerError, e.getLocalizedMessage())
-              }
-            }
-          }
-        }
       }
   }
 }

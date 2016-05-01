@@ -17,7 +17,10 @@ trait IntegrationHelper {
 
   val internalPost = BlogPost("l.q.wei91@gmail.com", "Some title", "Content", LocalDate.now(), Nil)
 
-  def clearPost = () => Await.result(db.run(PostController.allPost.delete), 1 second)
+  def clearPost = () => {
+    Await.result(db.run(PostController.allPost.delete), 1 second)
+    db.close()
+  }
 
   def insertPost = () => {
     val updateQ = sqlu"""insert into posts values(0, 'l.q.wei91@gmail.com', 'sample', 'sample', now(), '{}')"""

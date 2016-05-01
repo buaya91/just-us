@@ -59,7 +59,36 @@ class PostRouteSpec extends FunSpec
       }
     }
 
-    describe("when receive GET on /post/:id") {
+    describe("when receive POST on /post/pid") {
+      var token = ""
+      Post("/login", testCredential) ~> authRoute ~> check {
+        token = header("Set-Authorization").get.value()
+      }
+
+      it("should update DB if payload is valid") {
+        HttpHeader.parse("Authorization", "Bearer " + token) match {
+          case ParsingResult.Ok(h, _) => {
+            Post("/post/0", testPost.copy(title = "Update #2")).withHeaders(h) ~> postRoute ~> check {
+              status should equal(StatusCodes.OK)
+            }
+          }
+          case _ => assert(false, "no token!!")
+        }
+      }
+
+      it("should return validation error if paylod is not valid") {
+        HttpHeader.parse("Authorization", "Bearer " + token) match {
+          case ParsingResult.Ok(h, _) => {
+            Post("/post/0", "Simple string").withHeaders(h) ~> postRoute ~> check {
+              rejection
+            }
+          }
+          case _ => assert(false, "no token!!")
+        }
+      }
+    }
+
+    describe("when receive GET on /post?id") {
       it("should return post with pid") {
         Get("/post?id=0") ~> postRoute ~> check {
           entityAs[BlogPost] should equal(BlogPost("Qingwei", "sample", "sample", LocalDate.now(), Nil))
@@ -67,16 +96,12 @@ class PostRouteSpec extends FunSpec
       }
     }
 
-    describe("when receive GET on /post/:author") {
-
-    }
-
-    describe("when receive GET on /post/:before") {
-
-    }
-
-    describe("when receive GET on /post/:after") {
-
+    describe("when receive GET on /post?author") {
+      it("should return post with pid") {
+        Get("/post?author=l.q.wei91@gmail.com") ~> postRoute ~> check {
+          entityAs[Seq[BlogPost]] should contain(BlogPost("Qingwei", "sample", "sample", LocalDate.now(), Nil))
+        }
+      }
     }
   }
 }

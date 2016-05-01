@@ -15,5 +15,5 @@ trait PostSprayJson {
 
   implicit val postToJson = jsonFormat6(BlogPost.apply)
   implicit val userPostToJson = jsonFormat3(UserSubmitPost)
-  implicit val userUpdateToJson = jsonFormat4(UserSubmitPostUpdate)
+  implicit val userUpdateToJson = jsonFormat5(UserSubmitPostUpdate)
 }

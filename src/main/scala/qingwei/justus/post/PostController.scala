@@ -15,12 +15,9 @@ object PostController {
 
   def updatePost(update: UserSubmitPostUpdate)(implicit db: Database): Future[Boolean] = {
     val post = allPost.filter(p => p.pid === update.pid && p.author === update.author)
-    val updateResult = (update.title, update.content) match {
-      case (Some(t), Some(c)) => post.map(p => (p.title, p.content)).update((t, c))
-      case (Some(t), None) => post.map(_.title).update(t)
-      case (None, Some(c)) => post.map(_.content).update(c)
-      case _ => DBIO.successful(0)
-    }
+    val updateResult = post
+      .map(p => (p.title, p.content, p.tags))
+      .update((update.title, update.content, update.tags))
     db.run(updateResult).map(rc => if (rc == 1) true else false)
   }
 
