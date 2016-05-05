@@ -1,8 +1,14 @@
-name := "just-us"
+import sbt.Keys._
 
-version := "1.0"
+lazy val root = (project in file(".")).
+  enablePlugins(DockerPlugin).
+  settings(
+    name := "just-us",
+    version := "1.0",
+    scalaVersion := "2.11.7"
+  )
 
-scalaVersion := "2.11.7"
+test in assembly := {}
 
 val akkaV         = "2.4.4"
 val slickV        = "3.1.1"
