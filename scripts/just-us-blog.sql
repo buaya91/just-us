@@ -17,6 +17,3 @@ post_at DATE NOT NULL DEFAULT CURRENT_DATE,
 tags text[] NOT NULL DEFAULT '{}',
 FOREIGN KEY (author) REFERENCES users(email)
 );
-
-INSERT INTO users VALUES('l.q.wei91@gmail.com', '$2a$10$JhbPAWpRzUZekd/xxigCruaWnnyZeV2roLqenCfNpo5IBjgfZMcVC', 'Qingwei');
-INSERT INTO users VALUES('suhui1128@gmail.com', '$2a$10$JhbPAWpRzUZekd/xxigCruaWnnyZeV2roLqenCfNpo5IBjgfZMcVC', 'Suhui');

@@ -1,6 +1,3 @@
-[![Build Status](https://travis-ci.org/buaya91/just-us.svg?branch=master)](https://travis-ci.org/buaya91/just-us)
-[![Coverage Status](https://coveralls.io/repos/github/buaya91/just-us/badge.svg?branch=master)](https://coveralls.io/github/buaya91/just-us?branch=master)
-
 ## Just-Us Blog Backend
 
 * A problem is that we would have different related model with duplicated data, it's not dry,
