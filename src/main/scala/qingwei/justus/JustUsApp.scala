@@ -14,15 +14,16 @@ import qingwei.justus.postgres.CustomPostgresDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 import ch.megard.akka.http.cors.CorsDirectives._
 import com.typesafe.config.ConfigFactory
+import qingwei.justus.demo.DemoRoute
 
-object JustUsApp extends App with PostRoute with AuthRoute with AuthManager with DefaultJsonProtocol {
+object JustUsApp extends App with PostRoute with AuthRoute with DemoRoute with AuthManager with DefaultJsonProtocol {
   val db: Database = Database.forConfig("postgres")
   val httpConfig = ConfigFactory.load().getConfig("http")
 
   implicit val system: ActorSystem = ActorSystem()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  val allRoute = authRoute ~ postRoute
+  val allRoute = authRoute ~ postRoute ~ demoRoute
   val corsRoute = cors()(allRoute)
   val loggedRoute = JustUsLogger.log(Logging.InfoLevel, corsRoute)
 
