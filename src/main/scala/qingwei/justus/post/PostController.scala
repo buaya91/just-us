@@ -1,7 +1,9 @@
 package qingwei.justus.post
 
+import java.time.LocalDate
+
 import qingwei.justus.auth.AuthController
-import qingwei.justus.post.model.{ BlogPost, PostTable, UserSubmitPostUpdate }
+import qingwei.justus.post.model.{BlogPost, PostTable, UserSubmitPostUpdate}
 import qingwei.justus.postgres.CustomPostgresDriver.api._
 
 import scala.concurrent.Future
@@ -16,8 +18,8 @@ object PostController {
   def updatePost(update: UserSubmitPostUpdate)(implicit db: Database): Future[Boolean] = {
     val post = allPost.filter(p => p.pid === update.pid && p.author === update.author)
     val updateResult = post
-      .map(p => (p.title, p.content, p.tags))
-      .update((update.title, update.content, update.tags))
+      .map(p => (p.title, p.content, p.tags, p.postAt))
+      .update((update.title, update.content, update.tags, LocalDate.now()))
     db.run(updateResult).map(rc => if (rc == 1) true else false)
   }
 
