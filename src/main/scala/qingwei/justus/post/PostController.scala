@@ -3,7 +3,7 @@ package qingwei.justus.post
 import java.time.LocalDate
 
 import qingwei.justus.auth.AuthController
-import qingwei.justus.post.model.{BlogPost, PostTable, UserSubmitPostUpdate}
+import qingwei.justus.post.model.{ BlogPost, PostTable, UserSubmitPostUpdate }
 import qingwei.justus.postgres.CustomPostgresDriver.api._
 
 import scala.concurrent.Future

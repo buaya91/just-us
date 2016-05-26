@@ -2,11 +2,11 @@ package qingwei.justus
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import akka.http.scaladsl.{Http}
+import akka.http.scaladsl.{ Http }
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 
-import qingwei.justus.auth.{AuthManager, AuthRoute}
+import qingwei.justus.auth.{ AuthManager, AuthRoute }
 import qingwei.justus.logging.JustUsLogger
 import qingwei.justus.post.PostRoute
 import spray.json.DefaultJsonProtocol
