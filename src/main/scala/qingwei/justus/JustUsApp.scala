@@ -2,10 +2,11 @@ package qingwei.justus
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import akka.http.scaladsl.Http
+import akka.http.scaladsl.{Http}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-import qingwei.justus.auth.{ AuthManager, AuthRoute }
+
+import qingwei.justus.auth.{AuthManager, AuthRoute}
 import qingwei.justus.logging.JustUsLogger
 import qingwei.justus.post.PostRoute
 import spray.json.DefaultJsonProtocol
@@ -23,9 +24,14 @@ object JustUsApp extends App with PostRoute with AuthRoute with DemoRoute with A
   implicit val system: ActorSystem = ActorSystem()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  val allRoute = authRoute ~ postRoute ~ demoRoute
+  val allRoute = authRoute ~ postRoute
   val corsRoute = cors()(allRoute)
   val loggedRoute = JustUsLogger.log(Logging.InfoLevel, corsRoute)
 
-  Http().bindAndHandle(loggedRoute, httpConfig.getString("interface"), httpConfig.getInt("port"))
+  Http()
+    .bindAndHandle(
+      loggedRoute,
+      httpConfig.getString("interface"),
+      httpConfig.getInt("port")
+    )
 }
