@@ -24,7 +24,7 @@ object JustUsApp extends App with PostRoute with AuthRoute with DemoRoute with A
   implicit val system: ActorSystem = ActorSystem()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  val allRoute = authRoute ~ postRoute
+  val allRoute = authRoute ~ postRoute ~ demoRoute
   val corsRoute = cors()(allRoute)
   val loggedRoute = JustUsLogger.log(Logging.InfoLevel, corsRoute)
 
