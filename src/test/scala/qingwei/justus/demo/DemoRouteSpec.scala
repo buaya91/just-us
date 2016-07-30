@@ -5,11 +5,11 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest._
 
 class DemoRouteSpec extends FunSpec
-  with DemoRoute
-  with ShouldMatchers
-  with ScalatestRouteTest {
+    with DemoRoute
+    with ShouldMatchers
+    with ScalatestRouteTest {
   describe("Stream route") {
-    it ("should return chunked response") {
+    it("should return chunked response") {
       Get("/demo/stream") ~> demoRoute ~> check {
         status should be(StatusCodes.OK)
       }
